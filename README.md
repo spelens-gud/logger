@@ -40,7 +40,7 @@ go get -u gopkg.in/natefinch/lumberjack.v2
 package main
 
 import (
-	"github.com/spelens-gud/trunk/pkg/logger"
+	"github.com/spelens-gud/logger"
 	"go.uber.org/zap"
 )
 
@@ -258,7 +258,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spelens-gud/trunk/pkg/logger"
+	"github.com/spelens-gud/logger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -347,7 +347,7 @@ func initLogger() {
 package cmd
 
 import (
-	"github.com/spelens-gud/trunk/pkg/logger"
+	"github.com/spelens-gud/logger"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 )
