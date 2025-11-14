@@ -1,12 +1,12 @@
 package logger_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 	"time"
 
-	"github.com/spelens-gud/assert"
 	"github.com/spelens-gud/logger"
 	"go.uber.org/zap"
 )
@@ -26,7 +26,9 @@ func TestNewLogger(t *testing.T) {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	if log == nil {
@@ -44,7 +46,9 @@ func TestLoggerWithFields(t *testing.T) {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	// 测试结构化日志
@@ -64,7 +68,9 @@ func TestLoggerWithPrefix(t *testing.T) {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	// 测试前缀
@@ -82,7 +88,9 @@ func TestLoggerFormatted(t *testing.T) {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	// 测试格式化输出
@@ -118,7 +126,9 @@ func TestLoggerFileOutput(t *testing.T) {
 	log.Info("测试文件输出")
 	log.Error("测试错误日志")
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	// 检查文件是否存在
@@ -164,7 +174,9 @@ func TestMiddleware(t *testing.T) {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	// 测试 WithRequestID
@@ -200,7 +212,9 @@ func TestContextFields(t *testing.T) {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			t.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	// 测试上下文字段构建器
@@ -227,7 +241,9 @@ func BenchmarkStructuredLog(b *testing.B) {
 
 	log, _ := logger.NewLogger(config)
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			fmt.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	b.ResetTimer()
@@ -251,7 +267,9 @@ func BenchmarkFormattedLog(b *testing.B) {
 
 	log, _ := logger.NewLogger(config)
 	defer func(log logger.ILogger) {
-		assert.MustCall0E(log.Sync, "同步 logger 失败")
+		if err := log.Sync(); err != nil {
+			fmt.Errorf("同步 logger 错误: %v", err)
+		}
 	}(log)
 
 	b.ResetTimer()
