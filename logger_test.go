@@ -1,7 +1,6 @@
 package logger_test
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -242,7 +241,7 @@ func BenchmarkStructuredLog(b *testing.B) {
 	log, _ := logger.NewLogger(config)
 	defer func(log logger.ILogger) {
 		if err := log.Sync(); err != nil {
-			fmt.Errorf("同步 logger 错误: %v", err)
+			b.Errorf("同步 logger 错误: %v", err)
 		}
 	}(log)
 
@@ -268,7 +267,7 @@ func BenchmarkFormattedLog(b *testing.B) {
 	log, _ := logger.NewLogger(config)
 	defer func(log logger.ILogger) {
 		if err := log.Sync(); err != nil {
-			fmt.Errorf("同步 logger 错误: %v", err)
+			b.Errorf("同步 logger 错误: %v", err)
 		}
 	}(log)
 
