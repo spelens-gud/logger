@@ -6,13 +6,13 @@ import (
 	"testing"
 	"time"
 
-	logger2 "github.com/spelens-gud/trunk/pkg/logger"
+	"github.com/spelens-gud/logger"
 	"go.uber.org/zap"
 )
 
 // TestNewLogger 测试创建 logger
 func TestNewLogger(t *testing.T) {
-	config := &logger2.Config{
+	config := &logger.Config{
 		ServiceName: "test-service",
 		Environment: "test",
 		Level:       "debug",
@@ -20,7 +20,7 @@ func TestNewLogger(t *testing.T) {
 		File:        false,
 	}
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
@@ -33,10 +33,10 @@ func TestNewLogger(t *testing.T) {
 
 // TestLoggerWithFields 测试结构化字段
 func TestLoggerWithFields(t *testing.T) {
-	config := logger2.DefaultConfig()
+	config := logger.DefaultConfig()
 	config.ServiceName = "test-service"
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
@@ -51,10 +51,10 @@ func TestLoggerWithFields(t *testing.T) {
 
 // TestLoggerWithPrefix 测试前缀功能
 func TestLoggerWithPrefix(t *testing.T) {
-	config := logger2.DefaultConfig()
+	config := logger.DefaultConfig()
 	config.ServiceName = "test-service"
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
@@ -67,10 +67,10 @@ func TestLoggerWithPrefix(t *testing.T) {
 
 // TestLoggerFormatted 测试格式化输出
 func TestLoggerFormatted(t *testing.T) {
-	config := logger2.DefaultConfig()
+	config := logger.DefaultConfig()
 	config.ServiceName = "test-service"
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
@@ -86,7 +86,7 @@ func TestLoggerFileOutput(t *testing.T) {
 	// 创建临时目录
 	tmpDir := t.TempDir()
 
-	config := &logger2.Config{
+	config := &logger.Config{
 		ServiceName: "test-service",
 		Environment: "test",
 		Level:       "debug",
@@ -100,7 +100,7 @@ func TestLoggerFileOutput(t *testing.T) {
 		Compress:    false,
 	}
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
@@ -124,20 +124,20 @@ func TestLoggerFileOutput(t *testing.T) {
 
 // TestDefaultLogger 测试全局 logger
 func TestDefaultLogger(t *testing.T) {
-	config := logger2.DefaultConfig()
+	config := logger.DefaultConfig()
 	config.ServiceName = "test-global"
 
-	err := logger2.InitDefault(config)
+	err := logger.InitDefault(config)
 	if err != nil {
 		t.Fatalf("初始化全局 logger 失败: %v", err)
 	}
 
 	// 使用全局 logger
-	logger2.Info("全局日志测试")
-	logger2.Infof("格式化全局日志: %s", "test")
+	logger.Info("全局日志测试")
+	logger.Infof("格式化全局日志: %s", "test")
 
 	// 获取全局 logger
-	log := logger2.GetDefault()
+	log := logger.GetDefault()
 	if log == nil {
 		t.Fatal("全局 logger 不应该为 nil")
 	}
@@ -145,51 +145,51 @@ func TestDefaultLogger(t *testing.T) {
 
 // TestMiddleware 测试中间件
 func TestMiddleware(t *testing.T) {
-	config := logger2.DefaultConfig()
+	config := logger.DefaultConfig()
 	config.ServiceName = "test-middleware"
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer log.Sync()
 
 	// 测试 WithRequestID
-	requestLog := logger2.WithRequestID(log, "req-123")
+	requestLog := logger.WithRequestID(log, "req-123")
 	requestLog.Info("测试请求 ID")
 
 	// 测试 WithUserID
-	userLog := logger2.WithUserID(log, "user-456")
+	userLog := logger.WithUserID(log, "user-456")
 	userLog.Info("测试用户 ID")
 
 	// 测试 WithTraceID
-	traceLog := logger2.WithTraceID(log, "trace-789")
+	traceLog := logger.WithTraceID(log, "trace-789")
 	traceLog.Info("测试追踪 ID")
 
 	// 测试 WithDuration
-	logger2.WithDuration(log, "测试操作", func() {
+	logger.WithDuration(log, "测试操作", func() {
 		time.Sleep(10 * time.Millisecond)
 	})
 
 	// 测试 WithRecover
-	logger2.WithRecover(log, func() {
+	logger.WithRecover(log, func() {
 		log.Info("测试 recover")
 	})
 }
 
 // TestContextFields 测试上下文字段构建器
 func TestContextFields(t *testing.T) {
-	config := logger2.DefaultConfig()
+	config := logger.DefaultConfig()
 	config.ServiceName = "test-context"
 
-	log, err := logger2.NewLogger(config)
+	log, err := logger.NewLogger(config)
 	if err != nil {
 		t.Fatalf("创建 logger 失败: %v", err)
 	}
 	defer log.Sync()
 
 	// 测试上下文字段构建器
-	fields := logger2.NewContextFields().
+	fields := logger.NewContextFields().
 		AddString("key1", "value1").
 		AddInt("key2", 123).
 		AddBool("key3", true).
@@ -202,7 +202,7 @@ func TestContextFields(t *testing.T) {
 
 // BenchmarkStructuredLog 基准测试：结构化日志
 func BenchmarkStructuredLog(b *testing.B) {
-	config := &logger2.Config{
+	config := &logger.Config{
 		ServiceName: "bench-service",
 		Environment: "test",
 		Level:       "info",
@@ -210,7 +210,7 @@ func BenchmarkStructuredLog(b *testing.B) {
 		File:        false,
 	}
 
-	log, _ := logger2.NewLogger(config)
+	log, _ := logger.NewLogger(config)
 	defer log.Sync()
 
 	b.ResetTimer()
@@ -224,7 +224,7 @@ func BenchmarkStructuredLog(b *testing.B) {
 
 // BenchmarkFormattedLog 基准测试：格式化日志
 func BenchmarkFormattedLog(b *testing.B) {
-	config := &logger2.Config{
+	config := &logger.Config{
 		ServiceName: "bench-service",
 		Environment: "test",
 		Level:       "info",
@@ -232,7 +232,7 @@ func BenchmarkFormattedLog(b *testing.B) {
 		File:        false,
 	}
 
-	log, _ := logger2.NewLogger(config)
+	log, _ := logger.NewLogger(config)
 	defer log.Sync()
 
 	b.ResetTimer()
